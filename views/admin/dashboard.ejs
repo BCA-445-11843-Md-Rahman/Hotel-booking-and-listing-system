@@ -1,0 +1,39 @@
+<h2>Admin Dashboard</h2>
+
+<table class="table">
+
+<tr>
+
+<th>Title</th>
+
+<th>Price</th>
+
+<th>Delete</th>
+
+</tr>
+
+<% for(let l of listings){ %>
+
+<tr>
+
+<td><%= l.title %></td>
+
+<td><%= l.price %></td>
+
+<td>
+
+<form method="POST" action="/listings/<%=l._id%>?_method=DELETE">
+
+<button class="btn btn-danger">Delete</button>
+
+</form>
+
+</td>
+
+</tr>
+
+<% } %>
+
+</table>
+
+<!-- end -->
