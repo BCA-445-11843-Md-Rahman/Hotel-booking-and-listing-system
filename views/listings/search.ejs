@@ -1,0 +1,322 @@
+<% layout("/layouts/boilerplate") %>
+
+<!-- Advanced Search CSS -->
+<link rel="stylesheet" href="/css/search.css">
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Search Filters Sidebar -->
+        <div class="col-md-3">
+            <div class="search-filters-card">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="fas fa-filter"></i> Advanced Filters</h5>
+                </div>
+                <div class="card-body">
+                    <form id="advancedSearchForm">
+                        <!-- Price Range -->
+                        <div class="filter-section">
+                            <h6><i class="fas fa-rupee-sign"></i> Price Range</h6>
+                            <div class="price-range">
+                                <div class="input-group">
+                                    <span class="input-group-text">Min</span>
+                                    <input type="number" class="form-control" name="minPrice" placeholder="0" min="0">
+                                </div>
+                                <div class="input-group mt-2">
+                                    <span class="input-group-text">Max</span>
+                                    <input type="number" class="form-control" name="maxPrice" placeholder="10000" min="0">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Property Type -->
+                        <div class="filter-section">
+                            <h6><i class="fas fa-home"></i> Property Type</h6>
+                            <div class="form-check-group">
+                                <% ["apartment", "villa", "house", "studio", "resort", "hotel"].forEach(type => { %>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="propertyType" value="<%= type %>" id="type-<%= type %>">
+                                        <label class="form-check-label" for="type-<%= type %>">
+                                            <%= type.charAt(0).toUpperCase() + type.slice(1) %>
+                                        </label>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        </div>
+
+                        <!-- Bedrooms -->
+                        <div class="filter-section">
+                            <h6><i class="fas fa-bed"></i> Bedrooms</h6>
+                            <select class="form-select" name="bedrooms">
+                                <option value="">Any</option>
+                                <option value="0">Studio</option>
+                                <option value="1">1 Bedroom</option>
+                                <option value="2">2 Bedrooms</option>
+                                <option value="3">3 Bedrooms</option>
+                                <option value="4">4+ Bedrooms</option>
+                            </select>
+                        </div>
+
+                        <!-- Bathrooms -->
+                        <div class="filter-section">
+                            <h6><i class="fas fa-bath"></i> Bathrooms</h6>
+                            <select class="form-select" name="bathrooms">
+                                <option value="">Any</option>
+                                <option value="1">1 Bathroom</option>
+                                <option value="2">2 Bathrooms</option>
+                                <option value="3">3 Bathrooms</option>
+                                <option value="4">4+ Bathrooms</option>
+                            </select>
+                        </div>
+
+                        <!-- Max Guests -->
+                        <div class="filter-section">
+                            <h6><i class="fas fa-users"></i> Max Guests</h6>
+                            <select class="form-select" name="maxGuests">
+                                <option value="">Any</option>
+                                <option value="1">1 Guest</option>
+                                <option value="2">2 Guests</option>
+                                <option value="4">4 Guests</option>
+                                <option value="6">6 Guests</option>
+                                <option value="8">8+ Guests</option>
+                            </select>
+                        </div>
+
+                        <!-- Amenities -->
+                        <div class="filter-section">
+                            <h6><i class="fas fa-star"></i> Amenities</h6>
+                            <div class="amenities-grid">
+                                <% ["wifi", "parking", "pool", "gym", "air-conditioning", "kitchen", "tv", "washer", "elevator", "security", "garden", "balcony"].forEach(amenity => { %>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="amenities" value="<%= amenity %>" id="amenity-<%= amenity %>">
+                                        <label class="form-check-label" for="amenity-<%= amenity %>">
+                                            <%= amenity.replace('-', ' ').charAt(0).toUpperCase() + amenity.replace('-', ' ').slice(1) %>
+                                        </label>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        </div>
+
+                        <!-- Rating -->
+                        <div class="filter-section">
+                            <h6><i class="fas fa-star"></i> Minimum Rating</h6>
+                            <div class="rating-filter">
+                                <% [4, 3, 2, 1].forEach(rating => { %>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="rating" value="<%= rating %>" id="rating-<%= rating %>">
+                                        <label class="form-check-label" for="rating-<%= rating %>">
+                                            <% for(let i = 0; i < 5; i++) { %>
+                                                <i class="fas fa-star <%= i < rating ? 'text-warning' : 'text-muted' %>"></i>
+                                            <% } %>
+                                            & Up
+                                        </label>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        </div>
+
+                        <!-- Search Button -->
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-search"></i> Apply Filters
+                            </button>
+                        </div>
+                        
+                        <!-- Clear Filters -->
+                        <div class="d-grid mt-2">
+                            <button type="button" class="btn btn-outline-secondary" onclick="clearFilters()">
+                                <i class="fas fa-times"></i> Clear All
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Results -->
+        <div class="col-md-9">
+            <!-- Search Header -->
+            <div class="search-header">
+                <h3><i class="fas fa-search"></i> Search Results</h3>
+                <div class="search-info">
+                    <span id="resultsCount" class="badge bg-danger">0 Properties Found</span>
+                    <div class="sort-options">
+                        <label for="sortBy" class="form-label me-2">Sort by:</label>
+                        <select class="form-select form-select-sm" id="sortBy" style="width: auto;">
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="rating">Rating</option>
+                            <option value="newest">Newest First</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="searchLoading" class="text-center py-5" style="display: none;">
+                <div class="spinner-border text-danger" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Searching properties...</p>
+            </div>
+
+            <!-- Results Grid -->
+            <div id="searchResults" class="row g-4">
+                <!-- Results will be loaded here -->
+            </div>
+
+            <!-- No Results -->
+            <div id="noResults" class="text-center py-5" style="display: none;">
+                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                <h4>No properties found</h4>
+                <p class="text-muted">Try adjusting your filters or search criteria</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search JavaScript -->
+<script>
+// Advanced Search functionality
+let currentPage = 1;
+let searchQuery = {};
+
+// Initialize search
+document.addEventListener('DOMContentLoaded', function() {
+    // Load initial search results
+    performSearch();
+    
+    // Form submission
+    document.getElementById('advancedSearchForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        currentPage = 1;
+        performSearch();
+    });
+    
+    // Sort change
+    document.getElementById('sortBy').addEventListener('change', function() {
+        performSearch();
+    });
+});
+
+function performSearch() {
+    const loading = document.getElementById('searchLoading');
+    const results = document.getElementById('searchResults');
+    const noResults = document.getElementById('noResults');
+    
+    loading.style.display = 'block';
+    results.innerHTML = '';
+    noResults.style.display = 'none';
+    
+    // Collect form data
+    const formData = new FormData(document.getElementById('advancedSearchForm'));
+    searchQuery = {};
+    
+    for (let [key, value] of formData.entries()) {
+        if (key === 'propertyType' || key === 'amenities') {
+            if (!searchQuery[key]) searchQuery[key] = [];
+            searchQuery[key].push(value);
+        } else if (value) {
+            searchQuery[key] = value;
+        }
+    }
+    
+    // Add sort option
+    const sortBy = document.getElementById('sortBy').value;
+    searchQuery.sort = sortBy;
+    
+    // Add page
+    searchQuery.page = currentPage;
+    
+    // Make API call
+    fetch('/listings/advanced-search?' + new URLSearchParams(searchQuery))
+        .then(response => response.json())
+        .then(data => {
+            loading.style.display = 'none';
+            
+            if (data.properties && data.properties.length > 0) {
+                displayResults(data.properties);
+                document.getElementById('resultsCount').textContent = `${data.total} Properties Found`;
+            } else {
+                noResults.style.display = 'block';
+                document.getElementById('resultsCount').textContent = '0 Properties Found';
+            }
+        })
+        .catch(error => {
+            console.error('Search error:', error);
+            loading.style.display = 'none';
+            noResults.style.display = 'block';
+        });
+}
+
+function displayResults(properties) {
+    const resultsContainer = document.getElementById('searchResults');
+    resultsContainer.innerHTML = '';
+    
+    properties.forEach(property => {
+        const propertyCard = createPropertyCard(property);
+        resultsContainer.appendChild(propertyCard);
+    });
+}
+
+function createPropertyCard(property) {
+    const col = document.createElement('div');
+    col.className = 'col-md-6 col-lg-4';
+    
+    const amenitiesHtml = property.amenities.slice(0, 3).map(amenity => 
+        `<span class="amenity-badge">${amenity}</span>`
+    ).join('');
+    
+    const ratingHtml = property.rating > 0 ? 
+        `<div class="property-rating">
+            ${generateStars(property.rating)}
+            <span>(${property.reviewsCount})</span>
+        </div>` : '';
+    
+    col.innerHTML = `
+        <div class="card property-card h-100">
+            <div class="img-container">
+                <img src="${property.image}" class="card-img-top" alt="${property.title}" 
+                     onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'">
+                <div class="property-type-badge">${property.propertyType}</div>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">${property.title}</h5>
+                <p class="card-text text-muted">${property.location}, ${property.country}</p>
+                ${ratingHtml}
+                <div class="property-details">
+                    <span><i class="fas fa-bed"></i> ${property.bedrooms} Beds</span>
+                    <span><i class="fas fa-bath"></i> ${property.bathrooms} Baths</span>
+                    <span><i class="fas fa-users"></i> ${property.maxGuests} Guests</span>
+                </div>
+                <div class="amenities-list">
+                    ${amenitiesHtml}
+                </div>
+                <div class="property-footer">
+                    <span class="price" style="color: #1F2937; font-weight: 700;">Rs. ${property.price.toLocaleString()}/night</span>
+                    <a href="/listings/${property._id}" class="btn btn-danger btn-sm">View Details</a>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    return col;
+}
+
+function generateStars(rating) {
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+        if (i <= rating) {
+            stars += '<i class="fas fa-star text-warning"></i>';
+        } else {
+            stars += '<i class="far fa-star text-warning"></i>';
+        }
+    }
+    return stars;
+}
+
+function clearFilters() {
+    document.getElementById('advancedSearchForm').reset();
+    currentPage = 1;
+    performSearch();
+}
+</script>

@@ -1,43 +1,329 @@
 <% layout("/layouts/boilerplate") %>
 
-<div class="row mt-5">
-    <div class="col-md-6 offset-md-3">
-        <div class="card shadow">
-            <div class="card-body">
-                <h2 class="text-center mb-4">Login</h2>
-                
-                <% if(error && error.length > 0) { %>
-                    <div class="alert alert-danger" role="alert">
-                        <%= error %>
-                    </div>
-                <% } %>
-                
-                <% if(success && success.length > 0) { %>
-                    <div class="alert alert-success" role="success">
-                        <%= success %>
-                    </div>
-                <% } %>
+<style>
+.auth-page {
+    background: #667eea;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
 
-                <form action="/login" method="POST" novalidate>
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
-                    </div>
-                    
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-success-custom">Login</button>
-                    </div>
-                </form>
-                
-                <div class="text-center mt-3">
-                    <p>Don't have an account? <a href="/register">Register here</a></p>
+.auth-container {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    overflow: hidden;
+    max-width: 450px;
+    width: 100%;
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.auth-header {
+    background: #667eea;
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.auth-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.auth-header p {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin: 0;
+}
+
+.auth-body {
+    padding: 40px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: #1F2937;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    background: white;
+}
+
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.auth-footer {
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+}
+
+.auth-footer p {
+    color: #64748b;
+    margin: 0;
+}
+
+.auth-footer a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.auth-footer a:hover {
+    color: #667eea;
+    text-decoration: underline;
+}
+
+.alert {
+    padding: 12px 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border: none;
+    font-weight: 500;
+}
+
+.alert-danger {
+    background: #fee2e2;
+    color: #dc3545;
+    border-left: 4px solid #dc3545;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border-left: 4px solid #28a745;
+}
+
+.input-icon {
+    position: relative;
+}
+
+.input-icon i {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    font-size: 1.1rem;
+}
+
+.remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.remember-me input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
+.remember-me label {
+    font-size: 0.9rem;
+    color: #64748b;
+    cursor: pointer;
+}
+
+.forgot-password {
+    font-size: 0.9rem;
+}
+
+.forgot-password a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.forgot-password a:hover {
+    color: #667eea;
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .auth-page {
+        padding: 10px;
+    }
+    
+    .auth-container {
+        max-width: 100%;
+        margin: 10px;
+    }
+    
+    .auth-header {
+        padding: 20px;
+    }
+    
+    .auth-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .auth-body {
+        padding: 25px;
+    }
+}
+</style>
+
+<div class="auth-page">
+    <div class="auth-container">
+        <!-- Auth Header -->
+        <div class="auth-header">
+            <h1>Welcome Back</h1>
+            <p>Sign in to continue your journey</p>
+        </div>
+
+        <!-- Auth Body -->
+        <div class="auth-body">
+            <% if(error && error.length > 0) { %>
+                <div class="alert alert-danger" role="alert">
+                    <%= error %>
                 </div>
-            </div>
+            <% } %>
+            
+            <% if(success && success.length > 0) { %>
+                <div class="alert alert-success" role="success">
+                    <%= success %>
+                </div>
+            <% } %>
+
+            <form action="/login" method="POST" novalidate>
+                <div class="form-group">
+                    <label for="username" class="form-label">
+                        <i class="fas fa-user"></i> Username
+                    </label>
+                    <div class="input-icon">
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <div class="input-icon">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                        <i class="fas fa-lock"></i>
+                    </div>
+                </div>
+                
+                <div class="remember-forgot">
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <div class="forgot-password">
+                        <a href="/forgot-password">Forgot password?</a>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-login">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+            </form>
+        </div>
+
+        <!-- Auth Footer -->
+        <div class="auth-footer">
+            <p>Don't have an account? <a href="/register">Create account here</a></p>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add floating labels effect
+    const inputs = document.querySelectorAll('.form-control');
+    
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
+        
+        input.addEventListener('blur', function() {
+            if (!this.value) {
+                this.parentElement.classList.remove('focused');
+            }
+        });
+    });
+    
+    // Add remember me functionality
+    const rememberCheckbox = document.getElementById('remember');
+    const usernameInput = document.getElementById('username');
+    
+    // Load saved username if remember me is checked
+    if (localStorage.getItem('rememberMe') === 'true') {
+        rememberCheckbox.checked = true;
+        usernameInput.value = localStorage.getItem('savedUsername') || '';
+    }
+    
+    // Save username when remember me is checked
+    rememberCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            localStorage.setItem('rememberMe', 'true');
+            localStorage.setItem('savedUsername', usernameInput.value);
+        } else {
+            localStorage.removeItem('rememberMe');
+            localStorage.removeItem('savedUsername');
+        }
+    });
+});
+</script>

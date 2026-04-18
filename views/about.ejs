@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderlust – Book Hotels, Villas & Stays Across India & Worldwide</title>
+    <meta name="description" content="Discover and book hotels, rooms, and villas with Wanderlust. Explore affordable and comfortable stays across Indian cities and worldwide destinations for your next trip.">
+    <meta name="keywords" content="hotel booking, villas for rent, rooms per night, travel India, budget hotels, wanderlust stays, hotels in Indian cities, global hotel booking, vacation rentals">
+    <meta name="author" content="Abdul Rahman">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Wanderlust – Book Hotels, Villas & Stays Across India & Worldwide">
+    <meta property="og:description" content="Discover and book hotels, rooms, and villas with Wanderlust. Explore affordable and comfortable stays across Indian cities and worldwide destinations.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://wanderlust.com/about">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Wanderlust – Book Hotels, Villas & Stays">
+    <meta name="twitter:description" content="Discover and book hotels, rooms, and villas with Wanderlust.">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/enhanced-search.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <%- include("includes/navbar.ejs") %>
+
+    <style>
+    /* About Page Styles */
+    .about-section {
+        background-color: #F7F9FC;
+        padding: 80px 0;
+        min-height: 100vh;
+    }
+
+    .about-header {
+        text-align: center;
+        margin-bottom: 60px;
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    .about-header h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #1F2937;
+        margin-bottom: 16px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .about-header p {
+        font-size: 1.2rem;
+        color: #4B5563;
+        margin-bottom: 8px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .about-header .note {
+        font-size: 0.9rem;
+        color: #9CA3AF;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .content-card {
+        background: #FFFFFF;
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 40px;
+        animation: fadeInUp 0.8s ease-out;
+        animation-fill-mode: both;
+    }
+
+    .content-card h2 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #1F2937;
+        margin-bottom: 20px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .content-card p {
+        font-size: 1.1rem;
+        color: #4B5563;
+        line-height: 1.7;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .feature-list {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0;
+    }
+
+    .feature-list li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 16px;
+        font-size: 1.1rem;
+        color: #4B5563;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .feature-list li i {
+        color: #667eea;
+        margin-right: 12px;
+        font-size: 1.2rem;
+    }
+
+    .team-card {
+        background: #FFFFFF;
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 40px;
+        animation: fadeInUp 0.8s ease-out 0.4s;
+        animation-fill-mode: both;
+        text-align: center;
+    }
+
+    .team-card h2 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #1F2937;
+        margin-bottom: 40px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .profile-card {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        padding: 30px;
+        background: #F7F9FC;
+        border-radius: 16px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .profile-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+    }
+
+    .profile-image {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #667eea;
+    }
+
+    .profile-info {
+        flex: 1;
+        text-align: left;
+    }
+
+    .profile-name {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1F2937;
+        margin-bottom: 8px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .profile-role {
+        font-size: 1.1rem;
+        color: #667eea;
+        margin-bottom: 16px;
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+    }
+
+    .profile-description {
+        font-size: 1rem;
+        color: #4B5563;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .profile-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease-in-out;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .profile-link:hover {
+        color: #5a6fd8;
+        transform: translateX(4px);
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .about-section {
+            padding: 40px 20px;
+        }
+        
+        .about-header h1 {
+            font-size: 2rem;
+        }
+        
+        .content-card,
+        .team-card {
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .profile-card {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .profile-info {
+            text-align: center;
+        }
+    }
+    </style>
+
+    <!-- About Section -->
+    <div class="about-section">
+        <div class="container">
+            <!-- Header -->
+            <div class="about-header">
+                <h1>About Wanderlust</h1>
+                <p>Making travel simple and memorable</p>
+                <p class="note">We reply within 24 hours</p>
+            </div>
+
+            <!-- Introduction -->
+            <div class="content-card" style="animation-delay: 0.1s;">
+                <h2>Welcome to Wanderlust</h2>
+                <p>Wanderlust is a modern platform designed to help travelers discover and book hotels, rooms, and villas with ease. Whether you are planning a short trip or a long vacation, Wanderlust makes it simple to find the perfect stay.</p>
+            </div>
+
+            <!-- Our Story -->
+            <div class="content-card" style="animation-delay: 0.2s;">
+                <h2>Our Story</h2>
+                <p>This project was built with the idea of simplifying the booking experience and creating a clean, user-friendly platform. It started as a development project and evolved into a functional travel platform focused on real user needs.</p>
+            </div>
+
+            <!-- What We Offer -->
+            <div class="content-card" style="animation-delay: 0.3s;">
+                <h2>What We Offer</h2>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i> Easy hotel booking experience</li>
+                    <li><i class="fas fa-check-circle"></i> Explore stays by city</li>
+                    <li><i class="fas fa-check-circle"></i> Affordable and flexible options</li>
+                    <li><i class="fas fa-check-circle"></i> Clean and fast interface</li>
+                </ul>
+            </div>
+
+            <!-- Why Choose Us -->
+            <div class="content-card" style="animation-delay: 0.4s;">
+                <h2>Why Choose Us</h2>
+                <ul class="feature-list">
+                    <li><i class="fas fa-star"></i> Simple and user-friendly design</li>
+                    <li><i class="fas fa-star"></i> Smooth browsing experience</li>
+                    <li><i class="fas fa-star"></i> Focus on real usability</li>
+                </ul>
+            </div>
+
+            <!-- Team Section -->
+            <div class="team-card" style="animation-delay: 0.5s;">
+                <h2>Meet the Creator</h2>
+                <div class="profile-card">
+                    <img src="https://github.com/studentabdull.png" alt="Abdul Rahman" class="profile-image" onerror="this.src='https://picsum.photos/seed/abdulrahman/120/120.jpg'">
+                    <div class="profile-info">
+                        <div class="profile-name">Abdul Rahman</div>
+                        <div class="profile-role">Founder & Developer</div>
+                        <div class="profile-description">
+                            Wanderlust is independently built and developed by Abdul Rahman, a passionate developer focused on creating modern and user-friendly web applications. This platform reflects his vision of simplifying hotel and stay booking for travelers.
+                        </div>
+                        <a href="https://github.com/studentabdull" target="_blank" class="profile-link">
+                            <i class="fab fa-github"></i>
+                            View GitHub Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include("includes/footer.ejs") %>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script src="/js/script.js"></script>
+    <script src="/js/enhanced-search.js"></script>
+    <script src="/js/maps.js"></script>
+
+    <script>
+    // Add smooth scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    // Observe all cards
+    document.querySelectorAll('.content-card, .team-card').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+        observer.observe(card);
+    });
+    </script>
+</body>
+</html>

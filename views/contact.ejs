@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Wanderlust</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/enhanced-search.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <%- include("includes/navbar.ejs") %>
+
+<!-- Flash Messages -->
+<% if (success && success.length > 0) { %>
+    <div class="alert alert-success alert-dismissible fade show position-fixed" style="top: 80px; right: 20px; z-index: 1050; max-width: 400px;" role="alert">
+        <i class="fas fa-check-circle me-2"></i><%= success %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<% } %>
+
+<% if (error && error.length > 0) { %>
+    <div class="alert alert-danger alert-dismissible fade show position-fixed" style="top: 80px; right: 20px; z-index: 1050; max-width: 400px;" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i><%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<% } %>
+
+    <style>
+    /* Contact Page Styles */
+    .contact-section {
+        background-color: #F7F9FC;
+        padding: 80px 0;
+        min-height: 100vh;
+    }
+
+    .contact-header {
+        text-align: center;
+        margin-bottom: 60px;
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    .contact-header h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #1F2937;
+        margin-bottom: 16px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .contact-header p {
+        font-size: 1.2rem;
+        color: #4B5563;
+        margin-bottom: 8px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .contact-header .note {
+        font-size: 0.9rem;
+        color: #9CA3AF;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .contact-form-container {
+        background: #FFFFFF;
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 40px;
+        animation: fadeInUp 0.8s ease-out 0.2s;
+        animation-fill-mode: both;
+    }
+
+    .contact-info-container {
+        background: #FFFFFF;
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 40px;
+        animation: fadeInUp 0.8s ease-out 0.4s;
+        animation-fill-mode: both;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #1F2937;
+        margin-bottom: 8px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .form-control {
+        border: 2px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 1rem;
+        transition: all 0.3s ease-in-out;
+        background-color: #FFFFFF;
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        outline: none;
+    }
+
+    .form-control::placeholder {
+        color: #9CA3AF;
+    }
+
+    .btn-send-message {
+        background: #667eea;
+        color: #FFFFFF;
+        border: none;
+        border-radius: 12px;
+        padding: 14px 32px;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: all 0.3s ease-in-out;
+        font-family: 'Inter', sans-serif;
+        cursor: pointer;
+    }
+
+    .btn-send-message:hover {
+        background: #5a6fd8;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .contact-info-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 24px;
+        padding: 16px;
+        background: #F7F9FC;
+        border-radius: 12px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .contact-info-item:hover {
+        background: #EEF2FF;
+        transform: translateX(4px);
+    }
+
+    .contact-info-item i {
+        font-size: 1.2rem;
+        color: #667eea;
+        margin-right: 16px;
+        width: 24px;
+        text-align: center;
+    }
+
+    .contact-info-item .info-text {
+        flex: 1;
+    }
+
+    .contact-info-item .info-label {
+        font-weight: 600;
+        color: #1F2937;
+        margin-bottom: 4px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .contact-info-item .info-value {
+        color: #4B5563;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .social-links {
+        display: flex;
+        gap: 16px;
+        margin-top: 32px;
+    }
+
+    .social-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        background: #F7F9FC;
+        border-radius: 12px;
+        color: #667eea;
+        text-decoration: none;
+        transition: all 0.3s ease-in-out;
+        font-size: 1.2rem;
+    }
+
+    .social-link:hover {
+        background: #667eea;
+        color: #FFFFFF;
+        transform: translateY(-2px);
+    }
+
+    .map-section {
+        background: #FFFFFF;
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 40px;
+        animation: fadeInUp 0.8s ease-out 0.6s;
+        animation-fill-mode: both;
+    }
+
+    .map-container {
+        border-radius: 12px;
+        overflow: hidden;
+        height: 400px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .map-container iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    .success-message {
+        display: none;
+        background: #10B981;
+        color: #FFFFFF;
+        padding: 16px 24px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        text-align: center;
+        font-weight: 600;
+        animation: slideDown 0.5s ease-out;
+    }
+
+    .error-message {
+        display: none;
+        background: #EF4444;
+        color: #FFFFFF;
+        padding: 12px 20px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        font-size: 0.9rem;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .contact-section {
+            padding: 40px 20px;
+        }
+        
+        .contact-header h1 {
+            font-size: 2rem;
+        }
+        
+        .contact-form-container,
+        .contact-info-container,
+        .map-section {
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .btn-send-message {
+            width: 100%;
+        }
+        
+        .map-container {
+            height: 300px;
+        }
+    }
+    </style>
+
+    <!-- Contact Section -->
+    <div class="contact-section">
+        <div class="container">
+            <!-- Header -->
+            <div class="contact-header">
+                <h1>Contact Us</h1>
+                <p>We'd love to hear from you</p>
+                <p class="note">We reply within 24 hours</p>
+            </div>
+
+            <!-- Success Message -->
+            <div id="successMessage" class="success-message">
+                Message sent successfully! We'll get back to you soon.
+            </div>
+
+            <!-- Main Content: Two Column Layout -->
+            <div class="row">
+                <!-- Left Column: Contact Form -->
+                <div class="col-lg-7 mb-4">
+                    <div class="contact-form-container">
+                        <h2 class="mb-4" style="color: #1F2937; font-family: 'Inter', sans-serif; font-weight: 600;">Send us a message</h2>
+                        
+                        <form id="contactForm" action="/contact" method="POST">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name *</label>
+                                <input type="text" class="form-control" id="name" name="name" required placeholder="Enter your full name">
+                                <div class="error-message" id="nameError"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email *</label>
+                                <input type="email" class="form-control" id="email" name="email" required placeholder="your.email@example.com">
+                                <div class="error-message" id="emailError"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone *</label>
+                                <input type="tel" class="form-control" id="phone" name="phone" required placeholder="+1234567890">
+                                <div class="error-message" id="phoneError"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Subject *</label>
+                                <input type="text" class="form-control" id="subject" name="subject" required placeholder="How can we help you?">
+                                <div class="error-message" id="subjectError"></div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="message" class="form-label">Message *</label>
+                                <textarea class="form-control" id="message" name="message" rows="5" required placeholder="Tell us more about your inquiry..."></textarea>
+                                <div class="error-message" id="messageError"></div>
+                            </div>
+
+                            <button type="submit" class="btn-send-message">
+                                Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Right Column: Contact Info -->
+                <div class="col-lg-5 mb-4">
+                    <div class="contact-info-container">
+                        <h3 class="mb-4" style="color: #1F2937; font-family: 'Inter', sans-serif; font-weight: 600;">Get in touch</h3>
+                        
+                        <div class="contact-info-item">
+                            <i class="fas fa-envelope"></i>
+                            <div class="info-text">
+                                <div class="info-label">Email</div>
+                                <div class="info-value">support@wanderlust.com</div>
+                            </div>
+                        </div>
+
+                        <div class="contact-info-item">
+                            <i class="fas fa-phone"></i>
+                            <div class="info-text">
+                                <div class="info-label">Phone</div>
+                                <div class="info-value">1231231231</div>
+                            </div>
+                        </div>
+
+                        <div class="contact-info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div class="info-text">
+                                <div class="info-label">Address</div>
+                                <div class="info-value">Gaya, Bihar</div>
+                            </div>
+                        </div>
+
+                        <!-- Social Links -->
+                        <div class="social-links">
+                            <a href="https://instagram.com/wanderlust" target="_blank" class="social-link" title="Instagram">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="https://facebook.com/wanderlust" target="_blank" class="social-link" title="Facebook">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="https://twitter.com/wanderlust" target="_blank" class="social-link" title="Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="https://linkedin.com/company/wanderlust" target="_blank" class="social-link" title="LinkedIn">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map Section -->
+            <div class="map-section">
+                <h3 class="mb-4" style="color: #1F2937; font-family: 'Inter', sans-serif; font-weight: 600;">Find us on the map</h3>
+                <div class="map-container">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3647.3456789012!2d84.9876543!3d24.7654321!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjTCsDIwLjYyTiA4NMKwMDkuNzRa!5e0!3m2!1sen!2sin!4v1234567890"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include("includes/footer.ejs") %>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script src="/js/script.js"></script>
+    <script src="/js/enhanced-search.js"></script>
+    <script src="/js/maps.js"></script>
+
+    <script>
+    // Contact Form Validation and Submission
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+        // Clear previous errors
+        const errorElements = document.querySelectorAll('.error-message');
+        errorElements.forEach(element => {
+            element.style.display = 'none';
+            element.textContent = '';
+        });
+        
+        // Get form values
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const subject = document.getElementById('subject').value.trim();
+        const message = document.getElementById('message').value.trim();
+        
+        let isValid = true;
+        
+        // Validate name
+        if (name.length < 2) {
+            showError('nameError', 'Name must be at least 2 characters long');
+            isValid = false;
+        }
+        
+        // Validate email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            showError('emailError', 'Please enter a valid email address');
+            isValid = false;
+        }
+        
+        // Validate phone
+        const phoneRegex = /^[\d\s\-\+\(\)]+$/;
+        if (!phoneRegex.test(phone) || phone.length < 10) {
+            showError('phoneError', 'Please enter a valid phone number');
+            isValid = false;
+        }
+        
+        // Validate subject
+        if (subject.length < 3) {
+            showError('subjectError', 'Subject must be at least 3 characters long');
+            isValid = false;
+        }
+        
+        // Validate message
+        if (message.length < 10) {
+            showError('messageError', 'Message must be at least 10 characters long');
+            isValid = false;
+        }
+        
+        // If validation fails, prevent submission
+        if (!isValid) {
+            e.preventDefault();
+            return false;
+        }
+        
+        // Allow form to submit to backend
+        return true;
+    });
+
+    function showError(elementId, message) {
+        const errorElement = document.getElementById(elementId);
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+        errorElement.style.color = '#DC2626';
+    }
+
+    // Add input focus effects
+    document.querySelectorAll('.form-control').forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.style.transform = 'scale(1.02)';
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.style.transform = 'scale(1)';
+        });
+    });
+    </script>
+</body>
+</html>

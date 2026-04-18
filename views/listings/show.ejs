@@ -1,137 +1,637 @@
 <% layout("/layouts/boilerplate") %>
 
-<div class="row mt-4">
+<style>
+/* Modern Property Details Page Styles */
+.property-details-page {
+    background: #f8f9fa;
+    min-height: 100vh;
+}
 
-<div class="col-md-8 offset-md-2">
+.hero-section {
+    background: #667eea;
+    padding: 60px 0;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
 
-<div class="card mb-4">
-    <div class="card-body">
-        <h2 class="card-title"><%= listing.title %></h2>
-        <img src="<%= listing.image %>" class="img-fluid rounded mb-3" alt="<%= listing.title %>" onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'">
-        <p><b>Description:</b> <%= listing.description %></p>
-        <p><b>Price:</b> ₹ <%= listing.price %></p>
-        <p><b>Location:</b> <%= listing.location %>, <%= listing.country %></p>
-    </div>
-</div>
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.2;
+    z-index: 1;
+}
 
-<hr>
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
 
-<!-- ADMIN CONTROLS -->
+.property-hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+}
 
-<% if(currentUser && currentUser.role === "admin"){ %>
+.property-main-info h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
 
-<div class="mb-3">
+.property-price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1F2937;
+    margin-bottom: 15px;
+}
 
-<a href="/listings/<%= listing._id %>/edit" class="btn btn-warning">Edit</a>
+.property-price span {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 400;
+}
 
-<form action="/listings/<%= listing._id %>?_method=DELETE" method="POST" style="display:inline">
+.property-location {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
 
-<button class="btn btn-danger">Delete</button>
+.property-location i {
+    color: white;
+}
 
-</form>
+.property-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+}
 
-</div>
+.property-image:hover {
+    transform: scale(1.02);
+}
 
-<% } %>
+.content-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 20px;
+}
 
-<hr>
+.modern-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    padding: 40px;
+    margin-bottom: 40px;
+    border: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-<!-- BOOKING -->
-<div class="card mb-4">
-    <div class="card-header bg-dark text-white">
-        <h4 class="mb-0">🏨 Book this Villa</h4>
-    </div>
-    <div class="card-body">
-        <% if(currentUser){ %>
-            <form action="/book/<%= listing._id %>" method="POST">
-                <div class="mb-3">
-                    <label for="username" class="form-label">Your Name</label>
-                    <input type="text" name="username" class="form-control" id="username" placeholder="Enter your name" required>
+.modern-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+}
+
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.section-title i {
+    color: #667eea;
+    font-size: 1.5rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 15px;
+    border-left: 4px solid #667eea;
+    transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+}
+
+.feature-icon {
+    width: 50px;
+    height: 50px;
+    background: #667eea;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+}
+
+.feature-content h6 {
+    margin: 0 0 5px 0;
+    color: #1F2937;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.feature-content p {
+    margin: 0;
+    color: #4B5563;
+    font-size: 0.9rem;
+}
+
+.amenities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.amenity-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.amenity-item:hover {
+    border-color: #667eea;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.1);
+}
+
+.amenity-icon {
+    width: 40px;
+    height: 40px;
+    background: #667eea;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.amenity-icon i {
+    color: white;
+    font-size: 1rem;
+}
+
+.amenity-name {
+    font-weight: 500;
+    color: #1F2937;
+    font-size: 0.95rem;
+}
+
+.booking-section {
+    background: #667eea;
+    color: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.booking-price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.booking-btn {
+    background: white;
+    color: #667eea;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.booking-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.map-section {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.map-container {
+    position: relative;
+    height: 400px;
+    border-radius: 20px;
+}
+
+.location-details {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    margin-top: 20px;
+}
+
+.location-detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.location-detail-item:last-child {
+    border-bottom: none;
+}
+
+.reviews-section {
+    margin-top: 40px;
+}
+
+.review-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 20px;
+    border-left: 4px solid #ffd700;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.review-rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffd700;
+}
+
+.review-date {
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.review-text {
+    color: #2c3e50;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.admin-controls {
+    background: #fff3cd;
+    border: 2px solid #ffc107;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.admin-btn {
+    margin: 5px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .property-hero {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .property-main-info h1 {
+        font-size: 2rem;
+    }
+    
+    .property-price {
+        font-size: 2rem;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .amenities-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .content-section {
+        padding: 40px 15px;
+    }
+    
+    .modern-card {
+        padding: 25px;
+    }
+}
+</style>
+
+<div class="property-details-page">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-content">
+            <div class="property-hero">
+                <div class="property-main-info">
+                    <h1><%= listing.title %></h1>
+                    <div class="property-price">
+                        Rs <%= listing.price %> <span>per night</span>
+                    </div>
+                    <div class="property-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span><%= listing.location %>, <%= listing.country %></span>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="date" class="form-label">Booking Date</label>
-                    <input type="date" name="date" class="form-control" id="date" required>
+                <div>
+                    <img src="<%= listing.image || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80' %>" 
+                         class="property-image" 
+                         alt="<%= listing.title %>"
+                         onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'">
                 </div>
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-success-custom">🏠 Book Now</button>
-                </div>
-            </form>
-        <% } else { %>
-            <div class="text-center">
-                <p class="mb-3">Please login to book this villa</p>
-                <a href="/login" class="btn btn-success-custom">🔐 Login to Book</a>
             </div>
-        <% } %>
+        </div>
     </div>
-</div>
 
-<hr class="my-4">
+    <!-- Content Section -->
+    <div class="content-section">
+        <!-- Description -->
+        <div class="modern-card">
+            <h2 class="section-title">
+                <i class="fas fa-info-circle"></i>
+                Description
+            </h2>
+            <p style="font-size: 1.1rem; line-height: 1.7; color: #475569;">
+                <%= listing.description %>
+            </p>
+        </div>
 
-<!-- REVIEW FORM -->
-<div class="card mb-4">
-    <div class="card-header bg-dark text-white">
-        <h4 class="mb-0">⭐ Add Review</h4>
-    </div>
-    <div class="card-body">
-        <% if(currentUser){ %>
-            <form action="/listings/<%= listing._id %>/reviews" method="POST">
-                <div class="mb-3">
-                    <label for="comment" class="form-label">Your Review</label>
-                    <textarea name="review[comment]" class="form-control" id="comment" rows="3" placeholder="Share your experience..." required></textarea>
+        <!-- Features -->
+        <div class="modern-card">
+            <h2 class="section-title">
+                <i class="fas fa-star"></i>
+                Property Features
+            </h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h6>Property Type</h6>
+                        <p><%= listing.propertyType || 'Luxury Villa' %></p>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="rating" class="form-label fw-bold">⭐ Rating (1-5)</label>
-                    <select name="review[rating]" class="form-select form-select-lg" id="rating" required>
-                        <option value="" disabled selected>⭐ Select Rating</option>
-                        <option value="1">⭐ 1 - Poor</option>
-                        <option value="2">⭐⭐ 2 - Fair</option>
-                        <option value="3">⭐⭐⭐ 3 - Good</option>
-                        <option value="4">⭐⭐⭐⭐ 4 - Very Good</option>
-                        <option value="5">⭐⭐⭐⭐⭐ 5 - Excellent</option>
-                    </select>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-bed"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h6>Bedrooms</h6>
+                        <p><%= listing.bedrooms || 3 %> Bedrooms</p>
+                    </div>
                 </div>
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-success-custom">📝 Submit Review</button>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-bath"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h6>Bathrooms</h6>
+                        <p><%= listing.bathrooms || 2 %> Bathrooms</p>
+                    </div>
                 </div>
-            </form>
-        <% } else { %>
-            <div class="text-center">
-                <p>🔒 Please login to write a review</p>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h6>Max Guests</h6>
+                        <p><%= listing.maxGuests || 6 %> Guests</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-expand"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h6>Property Area</h6>
+                        <p><%= listing.area || 2000 %> sq ft</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h6>Rating</h6>
+                        <p><%= listing.rating || 4.8 %> (<%= listing.reviewsCount || 127 %> reviews)</p>
+                    </div>
+                </div>
             </div>
-        <% } %>
-    </div>
-</div>
+        </div>
 
-<hr>
-
-<!-- REVIEWS LIST -->
-<div class="card mb-4">
-    <div class="card-header bg-dark text-white">
-        <h4 class="mb-0">📝 All Reviews</h4>
-    </div>
-    <div class="card-body">
-        <% if(listing.reviews.length === 0){ %>
-            <div class="text-center text-muted py-3">
-                <p class="mb-0">📭 No reviews yet</p>
-                <small>Be the first to share your experience!</small>
-            </div>
-        <% } else { %>
-            <% for(let review of listing.reviews){ %>
-                <div class="card mb-3 border-success">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6 class="card-title mb-0 heading-green">⭐ <%= review.rating %>/5</h6>
-                            <small class="text-muted">Guest Review</small>
+        <!-- Amenities -->
+        <% if(listing.amenities && listing.amenities.length > 0) { %>
+        <div class="modern-card">
+            <h2 class="section-title">
+                <i class="fas fa-check-circle"></i>
+                Amenities
+            </h2>
+            <div class="amenities-grid">
+                <% listing.amenities.forEach(amenity => { %>
+                    <div class="amenity-item">
+                        <div class="amenity-icon">
+                            <% if(amenity === 'wifi') { %><i class="fas fa-wifi"></i><% } %>
+                            <% if(amenity === 'parking') { %><i class="fas fa-parking"></i><% } %>
+                            <% if(amenity === 'pool') { %><i class="fas fa-swimming-pool"></i><% } %>
+                            <% if(amenity === 'gym') { %><i class="fas fa-dumbbell"></i><% } %>
+                            <% if(amenity === 'air-conditioning') { %><i class="fas fa-snowflake"></i><% } %>
+                            <% if(amenity === 'kitchen') { %><i class="fas fa-utensils"></i><% } %>
+                            <% if(amenity === 'tv') { %><i class="fas fa-tv"></i><% } %>
+                            <% if(amenity === 'washer') { %><i class="fas fa-tshirt"></i><% } %>
+                            <% if(amenity === 'garden') { %><i class="fas fa-leaf"></i><% } %>
+                            <% if(amenity === 'balcony') { %><i class="fas fa-chair"></i><% } %>
+                            <% if(amenity === 'breakfast') { %><i class="fas fa-coffee"></i><% } %>
+                            <% if(amenity === 'security') { %><i class="fas fa-shield-alt"></i><% } %>
+                            <% if(amenity === 'elevator') { %><i class="fas fa-elevator"></i><% } %>
+                            <% if(amenity === 'workspace') { %><i class="fas fa-briefcase"></i><% } %>
                         </div>
-                        <p class="card-text mb-2"><%= review.comment %></p>
-                        <div class="d-flex justify-content-end">
-                            <small class="text-muted">
-                                <i class="fas fa-user-circle"></i> Verified Guest
-                            </small>
+                        <div class="amenity-name">
+                            <% if(amenity === 'wifi') { %>WiFi<% } %>
+                            <% if(amenity === 'parking') { %>Parking<% } %>
+                            <% if(amenity === 'pool') { %>Swimming Pool<% } %>
+                            <% if(amenity === 'gym') { %>Fitness Center<% } %>
+                            <% if(amenity === 'air-conditioning') { %>Air Conditioning<% } %>
+                            <% if(amenity === 'kitchen') { %>Kitchen<% } %>
+                            <% if(amenity === 'tv') { %>Smart TV<% } %>
+                            <% if(amenity === 'washer') { %>Washer<% } %>
+                            <% if(amenity === 'garden') { %>Garden<% } %>
+                            <% if(amenity === 'balcony') { %>Balcony<% } %>
+                            <% if(amenity === 'breakfast') { %>Breakfast<% } %>
+                            <% if(amenity === 'security') { %>Security<% } %>
+                            <% if(amenity === 'elevator') { %>Elevator<% } %>
+                            <% if(amenity === 'workspace') { %>Workspace<% } %>
                         </div>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+        <% } %>
+
+        <!-- Booking Section -->
+        <div class="modern-card booking-section">
+            <h2 class="section-title" style="color: white; justify-content: center;">
+                <i class="fas fa-calendar-check"></i>
+                Ready to Book?
+            </h2>
+            <div class="booking-price">
+                Rs <%= listing.price %> <span style="font-size: 1rem; opacity: 0.8;">per night</span>
+            </div>
+            <a href="/book/<%= listing._id %>" class="booking-btn">
+                Book Now
+            </a>
+        </div>
+
+        <!-- Map Section -->
+        <div class="modern-card map-section">
+            <h2 class="section-title">
+                <i class="fas fa-map-marked-alt"></i>
+                Location
+            </h2>
+            <div class="map-container">
+                <div id="map" style="height: 400px; border-radius: 15px;"></div>
+            </div>
+            <div class="location-details">
+                <div class="location-detail-item">
+                    <strong>Address:</strong>
+                    <span><%= listing.location %>, <%= listing.country %></span>
+                </div>
+                <div class="location-detail-item">
+                    <strong>Coordinates:</strong>
+                    <span><%= listing.coordinates ? listing.coordinates.lat.toFixed(4) : '28.6139' %>, <%= listing.coordinates ? listing.coordinates.lng.toFixed(4) : '77.2090' %></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Controls -->
+        <% if(currentUser && currentUser.role === "admin") { %>
+        <div class="admin-controls">
+            <h2 class="section-title">
+                <i class="fas fa-cog"></i>
+                Admin Controls
+            </h2>
+            <a href="/listings/<%= listing._id %>/edit" class="btn btn-warning admin-btn">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+            <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST" style="display: inline;">
+                <button class="btn btn-danger admin-btn" type="submit">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </form>
+        </div>
+        <% } %>
+
+        <!-- Reviews Section -->
+        <% if(listing.reviews && listing.reviews.length > 0) { %>
+        <div class="modern-card reviews-section">
+            <h2 class="section-title">
+                <i class="fas fa-comments"></i>
+                Guest Reviews (<%= listing.reviews.length %>)
+            </h2>
+            <% for(let review of listing.reviews) { %>
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-rating">
+                            <i class="fas fa-star"></i>
+                            <%= review.rating %>/5
+                        </div>
+                        <div class="review-date">
+                            <%= new Date(review.createdAt).toLocaleDateString() %>
+                        </div>
+                    </div>
+                    <div class="review-text">
+                        <%= review.comment %>
                     </div>
                 </div>
             <% } %>
+        </div>
+        <% } else { %>
+        <div class="modern-card">
+            <h2 class="section-title">
+                <i class="fas fa-comments"></i>
+                Reviews
+            </h2>
+            <div style="text-align: center; padding: 40px; color: #64748b;">
+                <i class="fas fa-comment-slash" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.5;"></i>
+                <h4>No reviews yet</h4>
+                <p>Be the first to share your experience!</p>
+            </div>
+        </div>
         <% } %>
     </div>
 </div>
+
+<!-- Include Google Maps CSS -->
+<link rel="stylesheet" href="/css/maps.css">
+
+<!-- Set global variables for maps -->
+<script>
+    window.listingCoordinates = {
+        lat: <%= listing.coordinates ? listing.coordinates.lat : 28.6139 %>,
+        lng: <%= listing.coordinates ? listing.coordinates.lng : 77.2090 %>
+    };
+    window.listingTitle = '<%= listing.title %>';
+    window.listingAddress = '<%= listing.location %>, <%= listing.country %>';
+    console.log('Listing coordinates set:', window.listingCoordinates);
+</script>

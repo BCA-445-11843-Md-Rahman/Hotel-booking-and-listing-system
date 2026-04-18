@@ -22,6 +22,71 @@ const listingSchema = new Schema({
     location: String,
     country: String,
 
+    // Google Maps coordinates
+    coordinates: {
+        lat: {
+            type: Number,
+            default: 28.6139 // Delhi default
+        },
+        lng: {
+            type: Number,
+            default: 77.2090 // Delhi default
+        }
+    },
+
+    // Advanced search fields
+    propertyType: {
+        type: String,
+        enum: ["apartment", "villa", "house", "studio", "resort", "hotel"],
+        default: "apartment"
+    },
+    
+    bedrooms: {
+        type: Number,
+        min: 0,
+        default: 1
+    },
+    
+    bathrooms: {
+        type: Number,
+        min: 0,
+        default: 1
+    },
+    
+    maxGuests: {
+        type: Number,
+        min: 1,
+        default: 2
+    },
+    
+    area: {
+        type: Number,
+        min: 0,
+        default: 500 // in sq ft
+    },
+    
+    amenities: [{
+        type: String,
+        enum: [
+            "wifi", "parking", "pool", "gym", "air-conditioning", 
+            "kitchen", "tv", "washer", "elevator", "security",
+            "garden", "balcony", "pet-friendly", "smoking-allowed",
+            "wheelchair-accessible", "workspace", "breakfast"
+        ]
+    }],
+    
+    rating: {
+        type: Number,
+        min: 0,
+        max: 5,
+        default: 0
+    },
+    
+    reviewsCount: {
+        type: Number,
+        default: 0
+    },
+
     // reviews relation
     reviews: [
         {
@@ -29,6 +94,12 @@ const listingSchema = new Schema({
             ref: "Review"
         }
     ]
+});
+
+listingSchema.post("findOneAndDelete", async (listing) => {
+    if (listing) {
+        await Review.deleteMany({ _id: { $in: listing.reviews } });
+    }
 });
 
 const Listing = mongoose.model("Listing", listingSchema);

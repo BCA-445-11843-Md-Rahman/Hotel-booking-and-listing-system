@@ -1,30 +1,1132 @@
 <% layout("/layouts/boilerplate") %>
 
-<h2 class="mb-4">Explore Villas</h2>
+<style>
+/* Homepage Styles */
+.homepage-section {
+    margin-bottom: 60px;
+}
 
-<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+/* Banner Carousel Styles */
+.banner-carousel {
+    width: 100%;
+    height: 400px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    margin: 30px 0 60px 0;
+    background: #F7F9FC;
+}
 
-<% for(let listing of allListings){ %>
+.banner-slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
 
-<a href="/listings/<%= listing._id %>" class="listing-link">
+.banner-slide.active {
+    opacity: 1;
+    transform: translateX(0);
+}
 
-<div class="card col">
+.banner-slide.prev {
+    transform: translateX(-100%);
+}
 
-<img src="<%= listing.image %>" class="card-img-top" alt="<%= listing.title %>" onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'">
+.banner-slide.next {
+    transform: translateX(100%);
+}
 
-<div class="card-body">
+.banner-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: brightness(0.7);
+    transform: scale(1.1);
+    transition: transform 8s ease-in-out;
+}
 
-<b><%= listing.title %></b>
-<p>₹ <%= listing.price %></p>
+.banner-slide.active .banner-background {
+    transform: scale(1);
+}
+
+.banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
+}
+
+.banner-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 60px;
+    max-width: 600px;
+    color: white;
+}
+
+.banner-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    line-height: 1.2;
+    font-family: 'Inter', sans-serif;
+}
+
+.banner-subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 24px;
+    line-height: 1.5;
+    font-family: 'Inter', sans-serif;
+    opacity: 0.9;
+}
+
+.banner-btn {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.banner-btn:hover {
+    background: #5a6fd8;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+/* Carousel Controls */
+.carousel-controls {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    pointer-events: none;
+}
+
+.carousel-arrow {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    pointer-events: all;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-arrow:hover {
+    background: rgba(255, 255, 255, 0.95);
+    transform: scale(1.05);
+}
+
+.carousel-arrow i {
+    color: #667eea;
+    font-size: 0.9rem;
+}
+
+/* Carousel Dots */
+.carousel-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 3;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.dot.active {
+    background: white;
+    width: 24px;
+    border-radius: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .banner-carousel {
+        height: 300px;
+        border-radius: 12px;
+        margin: 20px 0 40px 0;
+    }
+    
+    .banner-content {
+        padding: 0 30px;
+    }
+    
+    .banner-title {
+        font-size: 1.8rem;
+    }
+    
+    .banner-subtitle {
+        font-size: 1rem;
+    }
+    
+    .carousel-arrow {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .carousel-controls {
+        padding: 0 10px;
+    }
+}
+
+
+.section-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 32px;
+padding-bottom: 20px;
+border-bottom: 1px solid #E5E7EB;
+position: relative;
+}
+
+.section-header::after {
+content: '';
+position: absolute;
+bottom: -1px;
+left: 0;
+right: 0;
+height: 1px;
+background: linear-gradient(90deg, #667eea 0%, #5a6fd8 100%);
+transition: width 0.3s ease;
+width: 0;
+}
+
+.section-header:hover::after {
+width: 100%;
+}
+
+.section-title {
+font-size: 1.75rem;
+font-weight: 800;
+color: #1F2937;
+margin: 0;
+letter-spacing: -0.5px;
+text-transform: uppercase;
+}
+
+.view-all-btn {
+font-size: 0.9rem;
+font-weight: 600;
+color: #667eea;
+text-decoration: none;
+padding: 10px 20px;
+border-radius: 12px;
+background: rgba(102, 126, 234, 0.08);
+border: 1px solid rgba(102, 126, 234, 0.15);
+transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+position: relative;
+overflow: hidden;
+}
+
+.view-all-btn::before {
+content: '';
+position: absolute;
+top: 0;
+left: -100%;
+width: 100%;
+height: 100%;
+background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+transition: left 0.5s ease;
+}
+
+.view-all-btn:hover {
+color: white;
+background: #667eea;
+border-color: #667eea;
+transform: translateY(-2px);
+box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+}
+
+.view-all-btn:hover::before {
+left: 100%;
+}
+
+.property-card {
+border-radius: 16px;
+overflow: hidden;
+transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+cursor: pointer;
+min-width: 320px;
+flex-shrink: 0;
+background: white;
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+border: 1px solid rgba(0, 0, 0, 0.05);
+position: relative;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    min-width: 320px;
+    flex-shrink: 0;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.property-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.15);
+    border-color: rgba(102, 126, 234, 0.2);
+}
+
+.property-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea 0%, #5a6fd8 100%);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+    border-radius: 16px 16px 0 0;
+}
+
+.property-card:hover::before {
+    transform: scaleX(1);
+}
+
+.property-card img {
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    display: block;
+}
+
+.property-card:hover img {
+    transform: scale(1.05);
+}
+
+.property-card .card-body {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1F2937;
+    margin: 0 0 12px 0;
+    line-height: 1.3;
+    display: -webkit-box;
+    display: -moz-box;
+    display: box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    background: #F7F9FC;
+    border-radius: 16px;
+    margin: 40px 0;
+}
+
+.empty-state h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1F2937;
+    margin: 0 0 16px 0;
+}
+
+.empty-state p {
+    font-size: 1rem;
+    color: #6B7280;
+    margin: 0 0 24px 0;
+    max-width: 400px;
+}
+
+.btn-primary {
+    background: #667eea;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: #5a6fd8;
+    color: white;
+    text-decoration: none;
+}
+
+.property-price {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin: 0 0 12px 0;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.property-price span {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6B7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.property-location {
+    font-size: 0.9rem;
+    color: #4B5563;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #F7F9FC;
+    border-radius: 20px;
+    margin-top: auto;
+}
+
+.rating-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #667eea;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.property-card .property-location i {
+    font-size: 0.8rem;
+    color: #667eea;
+}
+
+.property-card .property-price span {
+    font-weight: 400;
+    color: #9CA3AF;
+    font-size: 0.9rem;
+}
+
+.card-features {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.feature-tag {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+    background: #F7F9FC;
+    color: #4B5563;
+    border-radius: 12px;
+    font-weight: 500;
+    border: 1px solid #E5E7EB;
+}
+
+.property-card .card-link-wrapper {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+/* Horizontal Scroll Container */
+.horizontal-scroll {
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    padding: 8px 0 32px 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+.city-carousel {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding: 8px 0 32px 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+.horizontal-scroll::-webkit-scrollbar,
+.city-carousel::-webkit-scrollbar {
+    display: none;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb,
+.city-carousel::-webkit-scrollbar-thumb {
+    display: none;
+}
+
+.horizontal-scroll::-webkit-scrollbar-track,
+.city-carousel::-webkit-scrollbar-track {
+    display: none;
+}
+
+.horizontal-scroll .property-card {
+    flex: 0 0 320px;
+    min-width: 320px;
+}
+
+.city-carousel .property-card {
+    flex: 0 0 280px;
+    min-width: 280px;
+}
+
+/* Responsive Design for City Sections */
+@media (max-width: 1200px) {
+    .city-carousel .property-card {
+        flex: 0 0 260px;
+        min-width: 260px;
+    }
+}
+
+@media (max-width: 992px) {
+    .city-carousel .property-card {
+        flex: 0 0 240px;
+        min-width: 240px;
+    }
+}
+
+@media (max-width: 768px) {
+    .city-carousel .property-card {
+        flex: 0 0 220px;
+        min-width: 220px;
+    }
+    
+    .city-carousel {
+        gap: 16px;
+        padding: 4px 0 24px 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .city-carousel .property-card {
+        flex: 0 0 200px;
+        min-width: 200px;
+    }
+    
+    .city-carousel {
+        gap: 12px;
+        padding: 2px 0 20px 0;
+    }
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: #F7F9FC;
+    border-radius: 16px;
+    margin: 40px 0;
+}
+
+.empty-state h3 {
+    color: #1F2937;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.empty-state p {
+    color: #4B5563;
+    margin-bottom: 24px;
+}
+
+.empty-state .btn-primary {
+    background: #667eea;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+.empty-state .btn-primary:hover {
+    background: #5a6fd8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .horizontal-scroll .property-card {
+        flex: 0 0 280px;
+        min-width: 280px;
+    }
+    
+    .property-card img {
+        height: 180px;
+    }
+}
+
+/* Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.homepage-section {
+    animation: fadeInUp 0.6s ease-out;
+}
+</style>
+
+<%
+// Process listings data first
+const listings = allListings || [];
+const hasListings = listings.length > 0;
+
+// Helper function to group listings by city
+function groupListingsByCity(listings) {
+    const grouped = {};
+    listings.forEach(listing => {
+        const city = listing.location || 'Unknown';
+        if (!grouped[city]) {
+            grouped[city] = [];
+        }
+        grouped[city].push(listing);
+    });
+    return grouped;
+}
+
+// Helper function to get random listings
+function getRandomListings(listings, count) {
+    const shuffled = [...listings].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, Math.min(count, listings.length));
+}
+
+// Helper function to get listings by price range
+function getListingsByPriceRange(listings, minPrice, maxPrice) {
+    return listings.filter(listing => {
+        const price = listing.price || 0;
+        return price >= minPrice && price <= maxPrice;
+    });
+}
+
+// Create different sections based on available data
+const groupedByCity = groupListingsByCity(listings);
+const cityNames = Object.keys(groupedByCity);
+const trendingListings = getRandomListings(listings, 6);
+const recommendedListings = getRandomListings(listings, 6);
+const budgetListings = getListingsByPriceRange(listings, 0, 3000).slice(0, 6);
+const premiumListings = getListingsByPriceRange(listings, 5000, 999999).slice(0, 6);
+%>
+
+<div class="container-fluid" style="padding: 0 20px;">
+    
+    <!-- Flash Messages -->
+    <% if(typeof success !== 'undefined' && success.length > 0) { %>
+        <div class="alert alert-success alert-dismissible fade show" role="alert" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; border-radius: 12px; margin: 20px 0; padding: 16px 20px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);">
+            <div style="display: flex; align-items: center; color: white;">
+                <i class="fas fa-check-circle" style="font-size: 1.2rem; margin-right: 12px;"></i>
+                <span style="font-weight: 500; font-size: 1rem;"><%= success %></span>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="filter: brightness(0) invert(1); opacity: 0.8;"></button>
+        </div>
+    <% } %>
+    
+    <% if(typeof error !== 'undefined' && error.length > 0) { %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; border-radius: 12px; margin: 20px 0; padding: 16px 20px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);">
+            <div style="display: flex; align-items: center; color: white;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 1.2rem; margin-right: 12px;"></i>
+                <span style="font-weight: 500; font-size: 1rem;"><%= error %></span>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="filter: brightness(0) invert(1); opacity: 0.8;"></button>
+        </div>
+    <% } %>
+    
+    <!-- Banner Carousel -->
+    <div class="banner-carousel">
+        <!-- Slide 1 - Luxury Hotel -->
+        <div class="banner-slide active">
+            <div class="banner-background" style="background-image: url('https://images.pexels.com/photos/261102/pexels-photo-261102.jpeg?auto=compress&cs=tinysrgb&w=1920&h=600&fit=crop');"></div>
+            <div class="banner-overlay"></div>
+            <div class="banner-content">
+                <h1 class="banner-title">Find your next stay</h1>
+                <p class="banner-subtitle">Discover amazing hotels and villas across cities</p>
+                <a href="/listings" class="banner-btn">Explore Now</a>
+            </div>
+        </div>
+        
+        <!-- Slide 2 - Resort Pool -->
+        <div class="banner-slide">
+            <div class="banner-background" style="background-image: url('https://images.pexels.com/photos/189296/pexels-photo-189296.jpeg?auto=compress&cs=tinysrgb&w=1920&h=600&fit=crop');"></div>
+            <div class="banner-overlay"></div>
+            <div class="banner-content">
+                <h1 class="banner-title">Weekend getaway starts here</h1>
+                <p class="banner-subtitle">Book comfortable stays at the best price</p>
+                <a href="/listings" class="banner-btn">Book Now</a>
+            </div>
+        </div>
+        
+        <!-- Slide 3 - Beach Resort -->
+        <div class="banner-slide">
+            <div class="banner-background" style="background-image: url('https://images.pexels.com/photos/1458444/pexels-photo-1458444.jpeg?auto=compress&cs=tinysrgb&w=1920&h=600&fit=crop');"></div>
+            <div class="banner-overlay"></div>
+            <div class="banner-content">
+                <h1 class="banner-title">Travel smart with Wanderlust</h1>
+                <p class="banner-subtitle">Explore, book, and enjoy your journey</p>
+                <a href="/listings" class="banner-btn">Start Journey</a>
+            </div>
+        </div>
+        
+        <!-- Slide 4 - Mountain View -->
+        <div class="banner-slide">
+            <div class="banner-background" style="background-image: url('https://images.pexels.com/photos/237274/pexels-photo-237274.jpeg?auto=compress&cs=tinysrgb&w=1920&h=600&fit=crop');"></div>
+            <div class="banner-overlay"></div>
+            <div class="banner-content">
+                <h1 class="banner-title">Luxury stays await</h1>
+                <p class="banner-subtitle">Experience premium hotels and villas worldwide</p>
+                <a href="/listings" class="banner-btn">Explore Luxury</a>
+            </div>
+        </div>
+        
+        <!-- Slide 5 - City Hotel -->
+        <div class="banner-slide">
+            <div class="banner-background" style="background-image: url('https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=1920&h=600&fit=crop');"></div>
+            <div class="banner-overlay"></div>
+            <div class="banner-content">
+                <h1 class="banner-title">Your perfect escape</h1>
+                <p class="banner-subtitle">Find hidden gems and popular destinations</p>
+                <a href="/listings" class="banner-btn">Discover More</a>
+            </div>
+        </div>
+        
+        <!-- Slide 6 - Palace Hotel -->
+        <div class="banner-slide">
+            <div class="banner-background" style="background-image: url('https://images.pexels.com/photos/262048/pexels-photo-262048.jpeg?auto=compress&cs=tinysrgb&w=1920&h=600&fit=crop');"></div>
+            <div class="banner-overlay"></div>
+            <div class="banner-content">
+                <h1 class="banner-title">Adventure begins here</h1>
+                <p class="banner-subtitle">Book your next memorable trip today</p>
+                <a href="/listings" class="banner-btn">Book Now</a>
+            </div>
+        </div>
+        
+        <!-- Carousel Controls -->
+        <div class="carousel-controls">
+            <div class="carousel-arrow" onclick="changeSlide(-1)">
+                <i class="fas fa-chevron-left"></i>
+            </div>
+            <div class="carousel-arrow" onclick="changeSlide(1)">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+        
+        <!-- Carousel Dots -->
+        <div class="carousel-dots">
+            <div class="dot active" onclick="goToSlide(0)"></div>
+            <div class="dot" onclick="goToSlide(1)"></div>
+            <div class="dot" onclick="goToSlide(2)"></div>
+            <div class="dot" onclick="goToSlide(3)"></div>
+            <div class="dot" onclick="goToSlide(4)"></div>
+            <div class="dot" onclick="goToSlide(5)"></div>
+        </div>
+    </div>
+    
+    <% if(hasListings) { %>
+        
+                
+        <!-- Trending Stays Section -->
+        <% if(trendingListings.length > 0) { %>
+            <div class="homepage-section">
+                <div class="section-header">
+                    <h2 class="section-title">Trending Stays</h2>
+                    <a href="/listings" class="view-all-btn">View all</a>
+                </div>
+                <div class="horizontal-scroll">
+                    <% trendingListings.forEach(listing => { %>
+                        <div class="property-card">
+                            <div class="card-link-wrapper" onclick="window.location.href='/listings/<%= listing._id %>'">
+                                <img src="<%= listing.image || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80' %>" 
+                                     alt="<%= listing.title %>"
+                                     onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'">
+                                <div class="card-body">
+                                    <div class="rating-badge">
+                                        <i class="fas fa-star"></i> 4.8
+                                    </div>
+                                    <h5 class="card-title"><%= listing.title %></h5>
+                                    <div class="property-price">
+                                        Rs <%= listing.price ? listing.price.toLocaleString("en-IN") : "N/A" %> <span>per night</span>
+                                    </div>
+                                    <div class="property-location">
+                                        <i class="fas fa-map-marker-alt"></i> <%= listing.location %>
+                                    </div>
+                                    <div class="card-features">
+                                        <span class="feature-tag">Free WiFi</span>
+                                        <span class="feature-tag">Pool</span>
+                                        <span class="feature-tag">Parking</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        <% } %>
+
+        <!-- Recommended Stays Section -->
+        <% if(recommendedListings.length > 0 && recommendedListings.length !== trendingListings.length) { %>
+            <div class="homepage-section">
+                <div class="section-header">
+                    <h2 class="section-title">Recommended Stays</h2>
+                    <a href="/listings" class="view-all-btn">View all</a>
+                </div>
+                <div class="horizontal-scroll">
+                    <% recommendedListings.forEach(listing => { %>
+                        <div class="property-card">
+                            <div class="card-link-wrapper" onclick="window.location.href='/listings/<%= listing._id %>'">
+                                <img src="<%= listing.image || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80' %>" 
+                                     alt="<%= listing.title %>"
+                                     onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'">
+                                <div class="card-body">
+                                    <div class="rating-badge">
+                                        <i class="fas fa-star"></i> 4.8
+                                    </div>
+                                    <h5 class="card-title"><%= listing.title %></h5>
+                                    <div class="property-price">
+                                        Rs <%= listing.price ? listing.price.toLocaleString("en-IN") : "N/A" %> <span>per night</span>
+                                    </div>
+                                    <div class="property-location">
+                                        <i class="fas fa-map-marker-alt"></i> <%= listing.location %>
+                                    </div>
+                                    <div class="card-features">
+                                        <span class="feature-tag">Free WiFi</span>
+                                        <span class="feature-tag">Pool</span>
+                                        <span class="feature-tag">Parking</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        <% } %>
+
+        <!-- Budget Stays Section -->
+        <% if(budgetListings.length > 0) { %>
+            <div class="homepage-section">
+                <div class="section-header">
+                    <h2 class="section-title">Budget Stays</h2>
+                    <a href="/listings?price=0-3000" class="view-all-btn">View all</a>
+                </div>
+                <div class="horizontal-scroll">
+                    <% budgetListings.forEach(listing => { %>
+                        <div class="property-card">
+                            <div class="card-link-wrapper" onclick="window.location.href='/listings/<%= listing._id %>'">
+                                <img src="<%= listing.image || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80' %>" 
+                                     alt="<%= listing.title %>"
+                                     onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'">
+                                <div class="card-body">
+                                    <div class="rating-badge">
+                                        <i class="fas fa-star"></i> 4.8
+                                    </div>
+                                    <h5 class="card-title"><%= listing.title %></h5>
+                                    <div class="property-price">
+                                        Rs <%= listing.price ? listing.price.toLocaleString("en-IN") : "N/A" %> <span>per night</span>
+                                    </div>
+                                    <div class="property-location">
+                                        <i class="fas fa-map-marker-alt"></i> <%= listing.location %>
+                                    </div>
+                                    <div class="card-features">
+                                        <span class="feature-tag">Free WiFi</span>
+                                        <span class="feature-tag">Pool</span>
+                                        <span class="feature-tag">Parking</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        <% } %>
+
+        <!-- Premium Stays Section -->
+        <% if(premiumListings.length > 0) { %>
+            <div class="homepage-section">
+                <div class="section-header">
+                    <h2 class="section-title">Premium Stays</h2>
+                    <a href="/listings?price=5000+" class="view-all-btn">View all</a>
+                </div>
+                <div class="horizontal-scroll">
+                    <% premiumListings.forEach(listing => { %>
+                        <div class="property-card">
+                            <div class="card-link-wrapper" onclick="window.location.href='/listings/<%= listing._id %>'">
+                                <img src="<%= listing.image || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80' %>" 
+                                     alt="<%= listing.title %>"
+                                     onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'">
+                                <div class="card-body">
+                                    <div class="rating-badge">
+                                        <i class="fas fa-star"></i> 4.8
+                                    </div>
+                                    <h5 class="card-title"><%= listing.title %></h5>
+                                    <div class="property-price">
+                                        Rs <%= listing.price ? listing.price.toLocaleString("en-IN") : "N/A" %> <span>per night</span>
+                                    </div>
+                                    <div class="property-location">
+                                        <i class="fas fa-map-marker-alt"></i> <%= listing.location %>
+                                    </div>
+                                    <div class="card-features">
+                                        <span class="feature-tag">Free WiFi</span>
+                                        <span class="feature-tag">Pool</span>
+                                        <span class="feature-tag">Parking</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        <% } %>
+
+        <!-- City-based Sections -->
+        <% cityNames.slice(0, 3).forEach(city => { %>
+            <% 
+                // Get all listings for this city
+                let cityListings = groupedByCity[city] || [];
+                
+                // If limited listings, get unique listings from other cities to fill up
+                if (cityListings.length > 0 && cityListings.length < 5) {
+                    const neededCount = 5 - cityListings.length;
+                    const otherListings = [];
+                    
+                    // Get unique listings from other cities
+                    cityNames.forEach(otherCity => {
+                        if (otherCity !== city && groupedByCity[otherCity]) {
+                            groupedByCity[otherCity].forEach(listing => {
+                                // Check if this listing is not already in cityListings
+                                const isDuplicate = cityListings.some(cityListing => 
+                                    cityListing._id.toString() === listing._id.toString()
+                                );
+                                const isAlreadyAdded = otherListings.some(addedListing => 
+                                    addedListing._id.toString() === listing._id.toString()
+                                );
+                                
+                                if (!isDuplicate && !isAlreadyAdded && otherListings.length < neededCount) {
+                                    otherListings.push(listing);
+                                }
+                            });
+                        }
+                    });
+                    
+                    cityListings = [...cityListings, ...otherListings].slice(0, 6);
+                } else {
+                    cityListings = cityListings.slice(0, 6);
+                }
+            %>
+            <% if(cityListings.length > 0) { %>
+                <div class="homepage-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Stays in <%= city %></h2>
+                        <a href="/listings?location=<%= encodeURIComponent(city) %>" class="view-all-btn">View all</a>
+                    </div>
+                    <div class="horizontal-scroll city-carousel">
+                        <% cityListings.forEach(listing => { %>
+                            <div class="property-card">
+                                <div class="card-link-wrapper" onclick="window.location.href='/listings/<%= listing._id %>'">
+                                    <img src="<%= listing.image || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80' %>" 
+                                         alt="<%= listing.title %>"
+                                         onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'">
+                                    <div class="card-body">
+                                        <div class="rating-badge">
+                                            <i class="fas fa-star"></i> 4.8
+                                        </div>
+                                        <h5 class="card-title"><%= listing.title %></h5>
+                                        <div class="property-price">
+                                            Rs <%= listing.price ? listing.price.toLocaleString("en-IN") : "N/A" %> <span>per night</span>
+                                        </div>
+                                        <div class="property-location">
+                                            <i class="fas fa-map-marker-alt"></i> <%= listing.location %>
+                                        </div>
+                                        <div class="card-features">
+                                            <span class="feature-tag">Free WiFi</span>
+                                            <span class="feature-tag">Pool</span>
+                                            <span class="feature-tag">Parking</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+            <% } %>
+        <% }); %>
+
+        <!-- More Stays Coming Soon Message -->
+        <% if(allListings.length < 10) { %>
+            <div class="empty-state">
+                <h3>More stays coming soon!</h3>
+                <p>We're adding new hotels and villas every day. Check back soon for more options.</p>
+                <a href="/listings" class="btn btn-primary">Browse all stays</a>
+            </div>
+        <% } %>
+
+    <% } else { %>
+        
+        <!-- No Listings State -->
+        <div class="empty-state">
+            <h3>No stays available yet</h3>
+            <p>We're working on adding amazing hotels and villas for your next trip.</p>
+            <a href="/listings/new" class="btn btn-primary">Add a new listing</a>
+        </div>
+        
+    <% } %>
 
 </div>
 
-</div>
+<script>
+// Banner Carousel JavaScript
+let currentSlide = 0;
+const slides = document.querySelectorAll('.banner-slide');
+const dots = document.querySelectorAll('.dot');
+const totalSlides = slides.length;
 
-</a>
+function showSlide(index) {
+    // Remove active class from all slides and dots
+    slides.forEach(slide => {
+        slide.classList.remove('active', 'prev', 'next');
+    });
+    dots.forEach(dot => dot.classList.remove('active'));
+    
+    // Add appropriate classes to slides
+    slides[index].classList.add('active');
+    
+    // Add prev class to slide before current
+    const prevIndex = (index - 1 + totalSlides) % totalSlides;
+    slides[prevIndex].classList.add('prev');
+    
+    // Add next class to slide after current
+    const nextIndex = (index + 1) % totalSlides;
+    slides[nextIndex].classList.add('next');
+    
+    // Add active class to current dot
+    dots[index].classList.add('active');
+}
 
-<% } %>
+function changeSlide(direction) {
+    currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+    showSlide(currentSlide);
+}
 
-</div>
+function goToSlide(index) {
+    currentSlide = index;
+    showSlide(currentSlide);
+}
 
-<!-- ctrl+c end -->
+// Auto-slide functionality
+function autoSlide() {
+    changeSlide(1);
+}
+
+// Start auto-slide
+let slideInterval = setInterval(autoSlide, 5000);
+
+// Pause auto-slide on hover
+const carousel = document.querySelector('.banner-carousel');
+if (carousel) {
+    carousel.addEventListener('mouseenter', () => {
+        clearInterval(slideInterval);
+    });
+    
+    carousel.addEventListener('mouseleave', () => {
+        slideInterval = setInterval(autoSlide, 5000);
+    });
+}
+
+// Initialize first slide
+showSlide(0);
+
+// Add smooth scroll behavior for horizontal containers
+document.querySelectorAll('.horizontal-scroll').forEach(container => {
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    container.addEventListener('mousedown', (e) => {
+        isDown = true;
+        startX = e.pageX - container.offsetLeft;
+        scrollLeft = container.scrollLeft;
+        container.style.cursor = 'grabbing';
+    });
+
+    container.addEventListener('mouseleave', () => {
+        isDown = false;
+        container.style.cursor = 'grab';
+    });
+
+    container.addEventListener('mouseup', () => {
+        isDown = false;
+        container.style.cursor = 'grab';
+    });
+
+    container.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - container.offsetLeft;
+        const walk = (x - startX) * 2;
+        container.scrollLeft = scrollLeft - walk;
+    });
+});
+</script>

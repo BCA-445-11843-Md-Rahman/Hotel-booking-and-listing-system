@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Messages - Wanderlust</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/enhanced-search.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <%- include("../includes/navbar.ejs") %>
+    
+    <div class="container">
+        <style>
+/* Admin Panel Navbar Styling */
+.admin-navbar {
+    background: linear-gradient(135deg, #667eea 0%, #5a6fd8 100%);
+    color: white;
+    padding: 20px 0;
+    margin-bottom: 30px;
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+}
+
+.admin-navbar-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: white;
+}
+
+.admin-brand i {
+    font-size: 1.5rem;
+}
+
+.admin-brand-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.admin-nav-links {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.admin-nav-link {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.admin-nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.admin-nav-link.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.admin-nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 3px;
+    background: white;
+    border-radius: 2px;
+}
+
+.admin-user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 16px;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.admin-user-avatar {
+    width: 36px;
+    height: 36px;
+    background: white;
+    color: #667eea;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.admin-user-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.admin-user-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin: 0;
+    color: white;
+}
+
+.admin-user-role {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+}
+
+.notification-indicator {
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.notification-indicator:hover {
+    transform: scale(1.1);
+}
+
+.notification-indicator i {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.notification-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #dc2626;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    height: 18px;
+    line-height: 1;
+    text-align: center;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Main Content Styling */
+.admin-messages-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #F7F9FC;
+}
+
+.admin-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1F2937;
+    margin: 0;
+}
+
+.admin-stats {
+    display: flex;
+    gap: 20px;
+}
+
+.stat-card {
+    background: white;
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    min-width: 120px;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #667eea;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #6B7280;
+    margin-top: 5px;
+}
+
+.messages-table {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.message-row {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #F3F4F6;
+    transition: background-color 0.2s ease;
+}
+
+.message-row:hover {
+    background-color: #F9FAFB;
+}
+
+.message-row.unread {
+    background-color: #F0F9FF;
+    border-left: 4px solid #667eea;
+}
+
+.message-checkbox {
+    margin-right: 15px;
+}
+
+.message-checkbox input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.message-content {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 200px 150px 250px 1fr 120px;
+    gap: 20px;
+    align-items: center;
+}
+
+.message-name {
+    font-weight: 600;
+    color: #1F2937;
+}
+
+.message-email {
+    color: #667eea;
+    font-size: 0.875rem;
+}
+
+.message-phone {
+    color: #6B7280;
+    font-size: 0.875rem;
+}
+
+.message-subject {
+    font-weight: 500;
+    color: #374151;
+}
+
+.message-text {
+    color: #6B7280;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+.message-date {
+    color: #9CA3AF;
+    font-size: 0.75rem;
+    text-align: right;
+}
+
+.message-actions {
+    display: flex;
+    gap: 10px;
+    margin-left: 20px;
+}
+
+.action-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.read-btn {
+    background: #F3F4F6;
+    color: #6B7280;
+}
+
+.read-btn:hover {
+    background: #E5E7EB;
+}
+
+.delete-btn {
+    background: #FEE2E2;
+    color: #DC2626;
+}
+
+.delete-btn:hover {
+    background: #FCA5A5;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6B7280;
+}
+
+.empty-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.empty-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #374151;
+}
+
+.empty-text {
+    font-size: 0.875rem;
+}
+
+@media (max-width: 768px) {
+    .admin-header {
+        flex-direction: column;
+        gap: 20px;
+        align-items: flex-start;
+    }
+    
+    .admin-stats {
+        width: 100%;
+        justify-content: space-around;
+    }
+    
+    .message-content {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .message-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .message-actions {
+        margin-left: 0;
+        margin-top: 10px;
+    }
+}
+</style>
+
+<!-- Admin Navbar -->
+<nav class="admin-navbar">
+    <div class="admin-navbar-content">
+        <!-- Admin Brand -->
+        <a href="/admin/messages" class="admin-brand">
+            <i class="fa-solid fa-shield-halved"></i>
+            <h1 class="admin-brand-text">Admin Panel</h1>
+        </a>
+
+        <!-- Admin Navigation Links -->
+        <div class="admin-nav-links">
+            <a href="/admin/messages" class="admin-nav-link active">
+                <i class="fa-solid fa-envelope"></i> Messages
+            </a>
+            <a href="/admin/dashboard" class="admin-nav-link">
+                <i class="fa-solid fa-chart-line"></i> Dashboard
+            </a>
+        </div>
+
+        <!-- Admin User Info -->
+        <div class="admin-user-info">
+            <div class="admin-user-avatar">
+                <%= currentUser.username.charAt(0).toUpperCase() %>
+            </div>
+            <div class="admin-user-details">
+                <p class="admin-user-name"><%= currentUser.username %></p>
+                <p class="admin-user-role">Administrator</p>
+            </div>
+            <% if(typeof unreadCount !== 'undefined' && unreadCount > 0) { %>
+                <div class="notification-indicator">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="notification-count"><%= unreadCount %></span>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="admin-messages-container">
+    <div class="admin-header">
+        <div>
+            <h1 class="admin-title">Contact Messages</h1>
+            <p style="color: #6B7280; margin-top: 5px;">Manage customer inquiries and support requests</p>
+        </div>
+        <div class="admin-stats">
+            <div class="stat-card">
+                <div class="stat-number"><%= messages.length %></div>
+                <div class="stat-label">Total Messages</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number"><%= messages.filter(m => !m.isRead).length %></div>
+                <div class="stat-label">Unread</div>
+            </div>
+        </div>
+    </div>
+
+    <% if (messages.length > 0) { %>
+        <div class="messages-table">
+            <% messages.forEach(message => { %>
+                <div class="message-row <%= !message.isRead ? 'unread' : '' %>" data-message-id="<%= message._id %>">
+                    <div class="message-checkbox">
+                        <input type="checkbox" class="message-select" value="<%= message._id %>">
+                    </div>
+                    <div class="message-content">
+                        <div>
+                            <div class="message-name"><%= message.name %></div>
+                            <div class="message-email"><%= message.email %></div>
+                        </div>
+                        <div class="message-phone"><%= message.phone %></div>
+                        <div>
+                            <div class="message-subject"><%= message.subject %></div>
+                            <div class="message-text" title="<%= message.message %>"><%= message.message %></div>
+                        </div>
+                        <div class="message-date">
+                            <%= new Date(message.createdAt).toLocaleDateString() %><br>
+                            <%= new Date(message.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %>
+                        </div>
+                    </div>
+                    <div class="message-actions">
+                        <button class="action-btn read-btn" onclick="toggleRead('<%= message._id %>')">
+                            <%= message.isRead ? 'Mark Unread' : 'Mark Read' %>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteMessage('<%= message._id %>')">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    <% } else { %>
+        <div class="empty-state">
+            <div class="empty-icon">???</div>
+            <div class="empty-title">No Messages Yet</div>
+            <div class="empty-text">When customers submit the contact form, their messages will appear here.</div>
+        </div>
+    <% } %>
+</div>
+
+<script>
+async function toggleRead(messageId) {
+    try {
+        const response = await fetch(`/admin/messages/${messageId}/read`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            const messageRow = document.querySelector(`[data-message-id="${messageId}"]`);
+            const readBtn = messageRow.querySelector('.read-btn');
+            
+            if (result.isRead) {
+                messageRow.classList.remove('unread');
+                readBtn.textContent = 'Mark Unread';
+            } else {
+                messageRow.classList.add('unread');
+                readBtn.textContent = 'Mark Read';
+            }
+            
+            // Update stats
+            updateStats();
+        } else {
+            alert('Failed to update message status');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to update message status');
+    }
+}
+
+async function deleteMessage(messageId) {
+    if (!confirm('Are you sure you want to delete this message?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/admin/messages/${messageId}`, {
+            method: 'DELETE'
+        });
+        
+        if (response.ok) {
+            const messageRow = document.querySelector(`[data-message-id="${messageId}"]`);
+            messageRow.remove();
+            
+            // Update stats
+            updateStats();
+            
+            // Show empty state if no messages left
+            const remainingMessages = document.querySelectorAll('.message-row');
+            if (remainingMessages.length === 0) {
+                location.reload();
+            }
+        } else {
+            alert('Failed to delete message');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to delete message');
+    }
+}
+
+function updateStats() {
+    const totalMessages = document.querySelectorAll('.message-row').length;
+    const unreadMessages = document.querySelectorAll('.message-row.unread').length;
+    
+    document.querySelector('.stat-number').textContent = totalMessages;
+    document.querySelectorAll('.stat-number')[1].textContent = unreadMessages;
+}
+
+// Select all functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAllCheckbox = document.createElement('input');
+    selectAllCheckbox.type = 'checkbox';
+    selectAllCheckbox.style.marginRight = '15px';
+    
+    // Add select all functionality if needed
+    const messageCheckboxes = document.querySelectorAll('.message-select');
+    messageCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            // Add any bulk selection logic here
+        });
+    });
+});
+</script>
+    </div>
+    
+    <%- include("../includes/footer.ejs") %>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/script.js"></script>
+    <script src="/js/enhanced-search.js"></script>
+    <script src="/js/maps.js"></script>
+</body>
+</html>
