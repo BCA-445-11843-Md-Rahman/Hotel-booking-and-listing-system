@@ -1,139 +1,99 @@
-# Wanderlust - Property Booking Platform
+# 🏨 Hotel Booking and Listing System
 
-A beautiful property booking platform built with Node.js, Express, MongoDB, and EJS.
+## 📌 Project Description
 
-## Features
+The Hotel Booking and Listing System is a full-stack web application developed using Node.js, Express.js, MongoDB, and EJS. It allows users to browse hotel listings, register and login, book hotels, and provide reviews. The system also includes an admin panel for managing hotel listings and monitoring bookings.
 
-- 🔐 User authentication (Register, Login, Logout)
-- 🏨 Property listings with images
-- 📝 Review system with ratings
-- 🎨 Beautiful UI with Bootstrap
-- 📱 Responsive design
-- 🌍 Property search and filtering
+---
 
-## Tech Stack
+## 🚀 Features
 
-- **Backend**: Node.js, Express.js
-- **Database**: MongoDB with Mongoose
-- **Authentication**: Passport.js with bcrypt
-- **Frontend**: EJS templating, Bootstrap 5
-- **Session Management**: express-session, connect-flash
+* User Registration and Login (Authentication)
+* Hotel Listings (View all available hotels)
+* Booking System (Book hotels with date selection)
+* Review System (Add and view reviews)
+* Admin Panel (Add, Edit, Delete listings)
+* Admin Dashboard (View total bookings and hotels)
 
-## Installation
+---
 
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+## 🛠️ Technologies Used
 
-3. Set up environment variables:
-   ```bash
-   # For production
-   MONGODB_URL=your_mongodb_connection_string
-   SESSION_SECRET=your_session_secret
-   ```
+* Frontend: HTML, CSS, Bootstrap, EJS
+* Backend: Node.js, Express.js
+* Database: MongoDB
+* Other Tools: Git, GitHub
 
-4. Start the application:
-   ```bash
-   npm start
-   ```
+---
 
-## Deployment
+## 📂 Project Structure
 
-### Heroku Deployment
+* Models → Database schemas (User, Listing, Booking, Review)
+* Routes → Application routes
+* Views → EJS templates
+* Public → Static files (CSS, JS)
 
-1. Install Heroku CLI and login:
-   ```bash
-   heroku login
-   ```
+---
 
-2. Create a new Heroku app:
-   ```bash
-   heroku create wanderlust-app
-   ```
+## 🔐 Security Features
 
-3. Set environment variables:
-   ```bash
-   heroku config:set MONGODB_URL=your_mongodb_url
-   heroku config:set SESSION_SECRET=your_session_secret
-   ```
+* Session-based Authentication
+* Role-based Authorization (User/Admin)
+* Protected Routes using Middleware
 
-4. Deploy:
-   ```bash
-   git add .
-   git commit -m "Ready for deployment"
-   git push heroku main
-   ```
+---
 
-### Vercel Deployment
+## 📈 Future Enhancements
 
-1. Install Vercel CLI:
-   ```bash
-   npm i -g vercel
-   ```
+* Online Payment Integration
+* Google Maps API Integration
+* Image Upload Feature (Cloudinary)
+* Mobile Application Version
 
-2. Login to Vercel:
-   ```bash
-   vercel login
-   ```
+---
 
-3. Deploy:
-   ```bash
-   vercel
-   ```
+## 📷 Screenshots
+HOME PAGE
+<img width="1888" height="888" alt="Screenshot 2026-04-14 200241" src="https://github.com/user-attachments/assets/6db98361-aa59-43e1-b0c1-e738759c05c5" />
 
-### Railway Deployment
+<img width="1848" height="863" alt="Screenshot 2026-04-14 200335" src="https://github.com/user-attachments/assets/8f0bb1c1-1ccf-4cc8-bdc3-6d2efdc3545a" />
 
-1. Install Railway CLI:
-   ```bash
-   npm install -g @railway/cli
-   ```
+SignUp Form
+<img width="1909" height="904" alt="Screenshot 2026-04-14 194948" src="https://github.com/user-attachments/assets/98e253be-ba17-4366-98eb-22cf9f966df7" />
 
-2. Login and deploy:
-   ```bash
-   railway login
-   railway init
-   railway up
-   ```
+Login Form
+<img width="1876" height="889" alt="Screenshot 2026-04-14 193612" src="https://github.com/user-attachments/assets/ce293835-6475-4cf7-920f-e74a1a39d071" />
 
-## Environment Variables
+All LIsting Page
+<img width="1368" height="671" alt="Screenshot 2026-04-10 195641" src="https://github.com/user-attachments/assets/7e0084ac-7fbe-4e45-98d3-4ec04dfbc86f" />
 
-- `MONGODB_URL`: MongoDB connection string
-- `SESSION_SECRET`: Secret key for sessions
-- `PORT`: Server port (default: 8080)
+Admin Panel
+<img width="1879" height="887" alt="Screenshot 2026-04-16 204020" src="https://github.com/user-attachments/assets/19fc106b-9b09-4c99-9ca9-217c6ab1c5f4" />
 
-## Project Structure
+<img width="1886" height="911" alt="Screenshot 2026-04-16 202059" src="https://github.com/user-attachments/assets/30a2331a-4241-420e-bfdd-c6879ba9ba8f" />
 
-```
-MAJORPROJECT/
-├── models/
-│   ├── listing.js
-│   └── user.js
-├── routes/
-│   ├── listing.js
-│   ├── review.js
-│   └── user.js
-├── views/
-│   ├── layouts/
-│   ├── listings/
-│   ├── users/
-│   └── includes/
-├── public/
-│   ├── css/
-│   └── js/
-├── app.js
-├── server.js
-└── package.json
-```
+<img width="1625" height="766" alt="Screenshot 2026-04-16 201430" src="https://github.com/user-attachments/assets/6b4ed934-a7a5-4e8a-b3d2-aacbc549c9d6" />
 
-## Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
+Booking Form
+<img width="297" height="535" alt="Screenshot 2026-04-16 180248" src="https://github.com/user-attachments/assets/58ca6470-7a93-4ceb-9022-421497651203" />
 
-## License
+Listing Form
+<img width="483" height="718" alt="Screenshot 2026-04-16 182310" src="https://github.com/user-attachments/assets/5720acde-6233-4c41-8cc7-e32d16861b07" />
 
-ISC License
+
+
+
+
+
+---
+
+## 📌 Conclusion
+
+This project provides a simple and efficient solution for hotel booking and management. It can be extended into a full-scale commercial application in the future.
+
+---
+
+## 📚 Author
+
+Developed by: [MD RAHMAN]
